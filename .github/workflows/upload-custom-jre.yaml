@@ -25,5 +25,5 @@ jobs:
                     
         - name: Build jar packages with Maven
           run: mvn -B package --file pom.xml
-          working-directory: ./modular-application
+          working-directory: .
             
