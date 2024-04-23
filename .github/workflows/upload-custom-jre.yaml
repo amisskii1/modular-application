@@ -39,9 +39,16 @@ jobs:
         - name: Build custom JRE
           run: |
             jlink --module-path ./modules --add-modules todolist.dao,todolist.gui,todolist.license,todolist.models,todolist.updater,todolist.utils,org.postgresql.jdbc,jdk.crypto.ec --launcher todolistapp=todolist.gui --output ./custom-jre
-          
-        - run: ls
-        - run: ls custom-jre
+        
+        - name: Easy Zip Files
+          uses: vimtor/action-zip@v1.2
+          with:
+              files: custom-jre
+              dest: todolistapp-jre.zip
+              
+        - run: ls 
+            
+
           
 
             
