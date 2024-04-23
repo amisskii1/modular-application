@@ -28,20 +28,20 @@ jobs:
           working-directory: .
         
         - name: Move all jars to the modules directory
-          run: move todolist.dao/target/todolist.dao-1.0-SNAPSHOT.jar modules/todolist.dao.jar
-        
-        - run: move todolist.dao/target/todolist.gui-1.0-SNAPSHOT.jar modules/todolist.gui.jar
-        
-        - run: move todolist.dao/target/todolist.license-1.0-SNAPSHOT.jar modules/todolist.license.jar
-         
-        - run: move todolist.dao/target/todolist.models-1.0-SNAPSHOT.jar modules/todolist.models.jar
+          run: |
+            move todolist.dao/target/todolist.dao-1.0-SNAPSHOT.jar modules/todolist.dao.jar
+            move todolist.dao/target/todolist.gui-1.0-SNAPSHOT.jar modules/todolist.gui.jar
+            move todolist.dao/target/todolist.license-1.0-SNAPSHOT.jar modules/todolist.license.jar
+            move todolist.dao/target/todolist.models-1.0-SNAPSHOT.jar modules/todolist.models.jar
+            move todolist.dao/target/todolist.updater-1.0-SNAPSHOT.jar modules/todolist.updater.jar
+            move todolist.dao/target/todolist.utils-1.0-SNAPSHOT.jar modules/todolist.utils.jar  
           
-        - run: move todolist.dao/target/todolist.updater-1.0-SNAPSHOT.jar modules/todolist.updater.jar
-        
-        - run: move todolist.dao/target/todolist.utils-1.0-SNAPSHOT.jar modules/todolist.utils.jar
-        
-        - name: check modules dir 
-          run: ls ./modules/
+        - name: Build custom JRE
+          run: |
+            mkdir custom-jre 
+            jlink --module-path ./modules --add-modules todolist.dao,todolist.gui,todolist.license,todolist.models,todolist.updater,todolist.utils,org.postgresql.jdbc,jdk.crypto.ec --launcher todolistapp=todolist.gui --output ./custom-jre
+          
+        - run: ls ./custom-jre/  
           
 
             
