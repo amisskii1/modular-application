@@ -30,7 +30,7 @@ jobs:
         - name: Check module directory
           run: ls todolist.dao/
         - name: target directoy
-          run: todolist.dao/target/
+          run: ls todolist.dao/target/
           
 
             
