@@ -40,7 +40,8 @@ jobs:
           run: |
             jlink --module-path ./modules --add-modules todolist.dao,todolist.gui,todolist.license,todolist.models,todolist.updater,todolist.utils,org.postgresql.jdbc,jdk.crypto.ec --launcher todolistapp=todolist.gui --output ./custom-jre
           
-        - run: ls ./custom-jre/  
+        - run: ls
+        - run: ls custom-jre
           
 
             
