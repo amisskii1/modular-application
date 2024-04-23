@@ -26,4 +26,10 @@ jobs:
         - name: Build jar packages with Maven
           run: mvn -B package --file pom.xml
           working-directory: .
+          
+        - name: Check module directory
+          run: ls todolist.dao/
+          run: todolist.dao/target/
+          
+
             
