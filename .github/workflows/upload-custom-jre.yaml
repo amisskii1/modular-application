@@ -4,27 +4,26 @@ on:
     push:
         branches: [master]
         
-    jobs: 
-        build:
-            runs-on: windows-latest
+jobs: 
+    build:
+        runs-on: windows-latest
         
         
-            steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
             
-            - name: Install the JDK
-              uses: actions/setup-java@v4
-              with: 
-                java-version: '21'
-                distribution: 'temurin'
-                architecture: x64
+        - name: Install the JDK
+          uses: actions/setup-java@v4
+          with: 
+            java-version: '21'
+            distribution: 'temurin'
+            architecture: x64
                 
-            - name: Check file system
-              run: ls 
-              
-                
-            - name: Build jar packages with Maven
-              run: mvn -B package --file pom.xml
-              working-directory: ./modular-application
+        - name: Check file system
+          run: ls 
+                    
+        - name: Build jar packages with Maven
+          run: mvn -B package --file pom.xml
+          working-directory: ./modular-application
             
