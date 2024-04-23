@@ -20,10 +20,7 @@ jobs:
             java-version: '21'
             distribution: 'temurin'
             architecture: x64
-                
-        - name: Check file system
-          run: ls 
-                    
+                                    
         - name: Build jar packages with Maven
           run: mvn -B package --file pom.xml
           working-directory: .
@@ -46,6 +43,9 @@ jobs:
           with:
               files: custom-jre
               dest: todolistapp-jre.zip
+
+        - name: Check file system
+          run: ls 
               
               
         - name: Create Release
