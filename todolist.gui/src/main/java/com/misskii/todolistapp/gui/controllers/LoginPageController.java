@@ -77,9 +77,9 @@ public class LoginPageController extends GeneralController {
     public void initialize(){
         if ( !updaterApi.compareVersions() ){
             version.setStyle("-fx-text-fill: red;");
-            version.setText("It appearss you might not be using the most up-to-date version." +
+            version.setText("It appears you might not be using the most up-to-date version." +
                     " \nYou can download the latest version from the following link:" +
-                    "\nhttps://github.com/AntonMisskii/todolistApp/packages/1962002");
+                    "\nhttps://github.com/amisskii1/modular-application/releases");
         }else version.setText("You're all up to date with the latest version!");
     }
 
