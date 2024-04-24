@@ -1,5 +1,4 @@
-name: Upload Java custom JRE
-
+name: Upload Artifacts
 on:
     push:
         branches: [master]
@@ -71,3 +70,35 @@ jobs:
             asset_path: ./todolistapp-jre.zip
             asset_name: todolistapp-jre.zip
             asset_content_type: application/zip
+
+
+    publish-packages:
+      needs: upload-custom-jre
+      runs-on: windows-latest
+      permissions:
+        contents: read
+        packages: write
+
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set up JDK 21
+          uses: actions/setup-java@v3
+          with:
+            java-version: '21'
+            distribution: 'temurin'
+            server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+            url: 'https://maven.pkg.github.com/amisskii1/modular-application'
+            settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+        - name: Check filesystem
+          run: ls D:\a\modular-application\modular-application\
+        - name: get content of setings.xml file
+          run: Get-Content D:\a\modular-application\modular-application\settings.xml
+        - name: get content of pom.xml file
+          run: Get-Content D:\a\modular-application\modular-application\pom.xml
+        - name: Build with Maven
+          run: mvn -B package --file pom.xml
+        - name: Publish to GitHub Packages Apache Maven
+          run: mvn deploy -s D:\a\modular-application\modular-application\settings.xml
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
