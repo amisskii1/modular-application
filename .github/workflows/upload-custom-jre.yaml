@@ -24,15 +24,22 @@ jobs:
         - name: Build jar packages with Maven
           run: mvn -B package --file pom.xml
           working-directory: .
+
+        - name: Get version from pom.xml
+          id: get_version
+          run: |
+            [xml]$pom = Get-Content pom.xml
+            $version = $pom.project.version
+            Write-Output "::set-output name=version::$version"
         
         - name: Move all jars to the modules directory
           run: |
-            move todolist.dao/target/todolist.dao-1.0-SNAPSHOT.jar modules/todolist.dao.jar
-            move todolist.gui/target/todolist.gui-1.0-SNAPSHOT.jar modules/todolist.gui.jar
-            move todolist.license/target/todolist.license-1.0-SNAPSHOT.jar modules/todolist.license.jar
-            move todolist.models/target/todolist.models-1.0-SNAPSHOT.jar modules/todolist.models.jar
-            move todolist.updater/target/todolist.updater-1.0-SNAPSHOT.jar modules/todolist.updater.jar
-            move todolist.utils/target/todolist.utils-1.0-SNAPSHOT.jar modules/todolist.utils.jar  
+            move todolist.dao/target/todolist.dao-${{ steps.get_version.outputs.version }}.jar modules/todolist.dao.jar
+            move todolist.gui/target/todolist.gui-${{ steps.get_version.outputs.version }}.jar modules/todolist.gui.jar
+            move todolist.license/target/todolist.license-${{ steps.get_version.outputs.version }}.jar modules/todolist.license.jar
+            move todolist.models/target/todolist.models-${{ steps.get_version.outputs.version }}.jar modules/todolist.models.jar
+            move todolist.updater/target/todolist.updater-${{ steps.get_version.outputs.version }}.jar modules/todolist.updater.jar
+            move todolist.utils/target/todolist.utils-${{ steps.get_version.outputs.version }}.jar modules/todolist.utils.jar  
           
         - name: Build custom JRE
           run: |
@@ -50,8 +57,8 @@ jobs:
           env:
             GITHUB_TOKEN: ${{ github.token }}
           with:
-            tag_name: ${{ github.run_number }}
-            release_name: v.${{ github.run_number }}
+            tag_name: ${{ steps.get_version.outputs.version }}
+            release_name: v.${{ steps.get_version.outputs.version }}
             draft: false
             prerelease: false
         - name: Upload Release Asset
