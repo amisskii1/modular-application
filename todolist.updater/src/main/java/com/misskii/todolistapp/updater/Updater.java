@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.misskii.todolistapp.updater.api.UpdaterApi;
 
 public class Updater implements UpdaterApi {
-    private static final String ACTUAL_VERSION = "1.0.3";
+    private static final String ACTUAL_VERSION = "1.0.4";
     private final String gitToken = System.getenv("packages_token");
     private String latestVersion;
     public boolean compareVersions(){
@@ -37,6 +37,7 @@ public class Updater implements UpdaterApi {
                 String latestVersion = jsonNode.get(0).get("name").asText();
 
                 setLatestVersion(latestVersion);
+                System.out.println(ACTUAL_VERSION);
                 System.out.println(latestVersion);
 
                 return ACTUAL_VERSION.equals(latestVersion);
