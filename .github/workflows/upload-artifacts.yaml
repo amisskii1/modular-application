@@ -4,76 +4,8 @@ on:
         branches: [master]
         
 jobs: 
-    upload-custom-jre:
-        runs-on: windows-latest
-        permissions: write-all
-        
-        
-        steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-            
-        - name: Install the JDK
-          uses: actions/setup-java@v4
-          with: 
-            java-version: '21'
-            distribution: 'temurin'
-            architecture: x64
-                                    
-        - name: Build jar packages with Maven
-          run: mvn -B package --file pom.xml
-          working-directory: .
 
-        - name: Get version from pom.xml
-          id: get_version
-          run: |
-            [xml]$pom = Get-Content pom.xml
-            $version = $pom.project.version
-            Write-Output "::set-output name=version::$version"
-        
-        - name: Move all jars to the modules directory
-          run: |
-            move todolist.dao/target/todolist.dao-${{ steps.get_version.outputs.version }}.jar modules/todolist.dao.jar
-            move todolist.gui/target/todolist.gui-${{ steps.get_version.outputs.version }}.jar modules/todolist.gui.jar
-            move todolist.license/target/todolist.license-${{ steps.get_version.outputs.version }}.jar modules/todolist.license.jar
-            move todolist.models/target/todolist.models-${{ steps.get_version.outputs.version }}.jar modules/todolist.models.jar
-            move todolist.updater/target/todolist.updater-${{ steps.get_version.outputs.version }}.jar modules/todolist.updater.jar
-            move todolist.utils/target/todolist.utils-${{ steps.get_version.outputs.version }}.jar modules/todolist.utils.jar  
-          
-        - name: Build custom JRE
-          run: |
-            jlink --module-path ./modules --add-modules todolist.dao,todolist.gui,todolist.license,todolist.models,todolist.updater,todolist.utils,org.postgresql.jdbc,jdk.crypto.ec --launcher todolistapp=todolist.gui --output ./custom-jre
-        
-        - name: Easy Zip Files
-          uses: vimtor/action-zip@v1.2
-          with:
-              files: custom-jre
-              dest: todolistapp-jre.zip
-
-        - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1.1.4
-          env:
-            GITHUB_TOKEN: ${{ github.token }}
-          with:
-            tag_name: ${{ steps.get_version.outputs.version }}
-            release_name: v${{ steps.get_version.outputs.version }}
-            draft: false
-            prerelease: false
-        - name: Upload Release Asset
-          id: upload-release-asset 
-          uses: tanyagray/action-upload-release-asset@v1.1.3
-          env:
-            GITHUB_TOKEN: ${{ github.token }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-            asset_path: ./todolistapp-jre.zip
-            asset_name: todolistapp-jre.zip
-            asset_content_type: application/zip
-
-
-    publish-packages:
-      needs: upload-custom-jre
+    upload-packages:
       runs-on: windows-latest
       permissions:
         contents: read
@@ -102,3 +34,71 @@ jobs:
           run: mvn deploy -s D:\a\modular-application\modular-application\settings.xml
           env:
             GITHUB_TOKEN: ${{ github.token }}
+
+    upload-custom-jre:
+      needs: upload-packages
+      runs-on: windows-latest
+      permissions: write-all
+
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Install the JDK
+          uses: actions/setup-java@v4
+          with:
+            java-version: '21'
+            distribution: 'temurin'
+            architecture: x64
+
+        - name: Build jar packages with Maven
+          run: mvn -B package --file pom.xml
+          working-directory: .
+
+        - name: Get version from pom.xml
+          id: get_version
+          run: |
+            [xml]$pom = Get-Content pom.xml
+            $version = $pom.project.version
+            Write-Output "::set-output name=version::$version"
+
+        - name: Move all jars to the modules directory
+          run: |
+            move todolist.dao/target/todolist.dao-${{ steps.get_version.outputs.version }}.jar modules/todolist.dao.jar
+            move todolist.gui/target/todolist.gui-${{ steps.get_version.outputs.version }}.jar modules/todolist.gui.jar
+            move todolist.license/target/todolist.license-${{ steps.get_version.outputs.version }}.jar modules/todolist.license.jar
+            move todolist.models/target/todolist.models-${{ steps.get_version.outputs.version }}.jar modules/todolist.models.jar
+            move todolist.updater/target/todolist.updater-${{ steps.get_version.outputs.version }}.jar modules/todolist.updater.jar
+            move todolist.utils/target/todolist.utils-${{ steps.get_version.outputs.version }}.jar modules/todolist.utils.jar  
+
+        - name: Build custom JRE
+          run: |
+            jlink --module-path ./modules --add-modules todolist.dao,todolist.gui,todolist.license,todolist.models,todolist.updater,todolist.utils,org.postgresql.jdbc,jdk.crypto.ec --launcher todolistapp=todolist.gui --output ./custom-jre
+
+        - name: Easy Zip Files
+          uses: vimtor/action-zip@v1.2
+          with:
+            files: custom-jre
+            dest: todolistapp-jre.zip
+
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1.1.4
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+          with:
+            tag_name: ${{ steps.get_version.outputs.version }}
+            release_name: v${{ steps.get_version.outputs.version }}
+            draft: false
+            prerelease: false
+        - name: Upload Release Asset
+          id: upload-release-asset
+          uses: tanyagray/action-upload-release-asset@v1.1.3
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+            asset_path: ./todolistapp-jre.zip
+            asset_name: todolistapp-jre.zip
+            asset_content_type: application/zip

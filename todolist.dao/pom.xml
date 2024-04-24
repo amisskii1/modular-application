@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>todolist.dao</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <properties>
         <maven.compiler.source>1.9</maven.compiler.source>
@@ -13,7 +13,7 @@
     <parent>
         <groupId>todolistapp</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
 
     <dependencies>
@@ -25,13 +25,13 @@
         <dependency>
             <groupId>todolistapp</groupId>
             <artifactId>todolist.utils</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>todolistapp</groupId>
             <artifactId>todolist.models</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

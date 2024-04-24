@@ -37,6 +37,7 @@ public class Updater implements UpdaterApi {
                 String latestVersion = jsonNode.get(0).get("name").asText();
 
                 setLatestVersion(latestVersion);
+                System.out.println(latestVersion);
 
                 return ACTUAL_VERSION.equals(latestVersion);
             }
