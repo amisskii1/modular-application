@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.misskii.todolistapp.updater.api.UpdaterApi;
 
 public class Updater implements UpdaterApi {
-    private static final String ACTUAL_VERSION = "1.1.2";
+    private static final String ACTUAL_VERSION = "1.0.1";
     private final String gitToken = System.getenv("packages_token");
     private String latestVersion;
     public boolean compareVersions(){
         try {
-            String apiUrl = "https://api.github.com/users/amisskii1/packages/maven/com.misskii.javatodolistapp/versions";
+            String apiUrl = "https://api.github.com/users/amisskii1/packages/maven/todolistapp.parent/versions";
             URL url = new URL(apiUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
